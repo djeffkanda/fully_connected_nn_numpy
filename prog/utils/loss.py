@@ -90,6 +90,18 @@ def hinge_naive_forward_backward(X, W, y, reg):
 
     ### TODO ###
     # Ajouter code ici #
+    for index,data in enumerate(X):
+        forward = np.dot(data,W)
+        pred = np.argmax(forward)
+        pred_score = forward[pred]
+        real_score = forward[y[index]]
+        loss += np.max([0.0 ,1.0 + pred_score - real_score]) + 0.5*reg*np.linalg.norm(W)**2
+        if pred!=y[index]:
+            dW[:,pred] += 1/X.shape[0]*data
+            dW[:,y[index]] -= 1/X.shape[0]*data
+        dW += reg*W
+
+    loss = loss/X.shape[0]
 
     return loss, dW
 
