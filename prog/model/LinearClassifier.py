@@ -45,6 +45,14 @@ class LinearClassifier:
         #     ajoutér la loss de l'itération courante dans "train_loss_history" 
         #     ajouter du code pour l'option *verbose*
 
+        for i in range(num_iter):
+            index = np.random.choice(X.shape[0],batch_size,replace=False)
+            X_batch = X[index]
+            y_batch = y[index]
+            loss, dW = self.forward_backward_function(X_batch,self.W,y_batch,reg)
+            self.W = self.W - learning_rate * dW
+            train_loss_history.append(loss)
+        #TODO add verbose options
         return train_loss_history
 
     def predict(self, X):
