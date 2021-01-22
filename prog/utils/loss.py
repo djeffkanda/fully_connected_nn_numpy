@@ -99,7 +99,7 @@ def hinge_naive_forward_backward(X, W, y, reg):
         if pred!=y[index]:
             dW[:,pred] += 1/X.shape[0]*data
             dW[:,y[index]] -= 1/X.shape[0]*data
-        dW += reg*W
+    dW += reg*W
 
     loss = loss/X.shape[0]
 
@@ -130,5 +130,17 @@ def hinge_forward_backward(X, W, y, reg):
 
     ### TODO ###
     # Ajouter code ici #
+    forward = np.matmul(X,W)
+    real_score = forward[np.arange(forward.shape[0]),y]
+    diff_to_real = forward - np.matrix(real_score).T
+    loss_vector = np.max(diff_to_real,axis=1)+1
+    loss = np.mean(loss_vector) + 0.5*reg*np.linalg.norm(W)**2
+
+    pred_index = np.argmax(forward,axis=1)
+    grad_matrix = np.zeros_like(forward)
+
+    grad_matrix[np.arange(grad_matrix.shape[0]),pred_index] = 1
+    grad_matrix[np.arange(grad_matrix.shape[0]), y] -= 1
+    dW = 1/X.shape[0]*np.matmul(X.T, grad_matrix) + reg*W
 
     return loss, dW
