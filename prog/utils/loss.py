@@ -32,6 +32,23 @@ def softmax_ce_naive_forward_backward(X, W, y, reg):
 
     ### TODO ###
     # Ajouter code ici #
+    # Iteration sur chaque vecteur x_i de la batch X
+    for i in range(N):
+        # Calcul du score du x_i
+        score = np.dot(X[i], W)
+        # Exponentiel du score
+        exp_score = np.exp(score)
+        # Normalisation afin d'obtenir les P(C_i|x_i)
+        s = exp_score / np.sum(exp_score)
+        loss += - np.log(s[y[i]])
+        for j  in range(C):
+            if j == y[i]:
+                dW[:, j] +=  X[i] * (s[j] - 1)
+            else:
+                dW[:, j] += X[i] * (s[j])
+    # Moyenne et regularisation
+    loss = loss / N + 0.5 * reg * np.linalg.norm(W) ** 2
+    dW = dW / N + 2 * 0.5 * reg * W
 
     return loss, dW
 
