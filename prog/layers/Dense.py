@@ -56,10 +56,13 @@ class Dense:
         # TODO
         # Ajouter code ici
         # Calculer W*x + b
+        H = np.matmul(X,self.W) + self.b
         # suivi de la fonction d'activation
+        L = self.activation['forward'](H)
         # N'oubliez pas de mettre les bonnes variables dans la cache!
+        self.cache = {'H':H, 'L':L}
 
-        return A
+        return L
 
     def backward(self, dA, **kwargs):
         """Effectue la rétro-propagation pour les paramètres de la
