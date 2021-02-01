@@ -42,7 +42,7 @@ def cross_entropy_loss(scores, t, reg, model_params):
     loss = np.mean(losses) + 0.5 * reg * R
 
     #Calcul du gradient
-    dScores = softmax_output - t_one_hot
+    dScores = 1/N * (softmax_output - t_one_hot)
     return loss, dScores, softmax_output
 
 
