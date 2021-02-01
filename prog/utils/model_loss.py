@@ -43,7 +43,6 @@ def cross_entropy_loss(scores, t, reg, model_params):
 
     #Calcul du gradient
     dScores = softmax_output - t_one_hot
-
     return loss, dScores, softmax_output
 
 
