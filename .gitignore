@@ -1,5 +1,7 @@
-datasets/cifar-10-batches-py
- __pycache__
+cifar-10-batches-py/
 .DS_Store
-*.pyc
-*.pyc
+__pycache__/
+.ipynb_checkpoints/
+med_tmp/
+.vscode/
+.idea/
