@@ -39,39 +39,20 @@ class LinearClassifier:
         
         ### TODO ###
         # coder une boucle d'entrainement faisant "num_iter" iterations.
-        for i in range(num_iter):
-            # à chaque itération,
-            #     faire une forward+backward pass afin de calculer la loss et le gradient pour une batch de "batch_size" elements choisis au hasard
-            batch_choice = np.random.choice(N, batch_size, replace=False)
-            X_batch = X[batch_choice]
-            y_batch = y[batch_choice]
-            loss, dW = self.forward_backward(X_batch, y_batch, reg)
-            #     mettre effectuer une descente de gradient : W = W - learning_rate * gradient
-            self.W -= learning_rate * dW
-            #     ajoutér la loss de l'itération courante dans "train_loss_history"
-            train_loss_history.append(loss)
-            #     ajouter du code pour l'option *verbose*
-            if verbose:
-                print(
-                    f'iteration : {i}, '
-                    f'loss : {loss}'
-                    , end='\r'
-                )
-        return train_loss_history
+        # à chaque itération, 
+        #     faire une forward+backward pass afin de calculer la loss et le gradient pour une batch de "batch_size" elements choisis au hasard
+        #     mettre effectuer une descente de gradient : W = W - learning_rate * gradient
+        #     ajoutér la loss de l'itération courante dans "train_loss_history" 
+        #     ajouter du code pour l'option *verbose*
 
         for i in range(num_iter):
-            index = np.random.choice(X.shape[0], batch_size, replace=False)
+            index = np.random.choice(X.shape[0],batch_size,replace=False)
             X_batch = X[index]
             y_batch = y[index]
-            loss, dW = self.forward_backward_function(X_batch, self.W, y_batch, reg)
+            loss, dW = self.forward_backward_function(X_batch,self.W,y_batch,reg)
             self.W = self.W - learning_rate * dW
             train_loss_history.append(loss)
         #TODO add verbose options
-            if verbose and (i % 500 == 0 or i == 0):
-                print(
-                    f'iteration : {i}/{num_iter}, '
-                    f'loss : {loss}'
-                )
         return train_loss_history
 
     def predict(self, X):
