@@ -39,11 +39,25 @@ class LinearClassifier:
         
         ### TODO ###
         # coder une boucle d'entrainement faisant "num_iter" iterations.
-        # à chaque itération, 
-        #     faire une forward+backward pass afin de calculer la loss et le gradient pour une batch de "batch_size" elements choisis au hasard
-        #     mettre effectuer une descente de gradient : W = W - learning_rate * gradient
-        #     ajoutér la loss de l'itération courante dans "train_loss_history" 
-        #     ajouter du code pour l'option *verbose*
+        for i in range(num_iter):
+            # à chaque itération,
+            #     faire une forward+backward pass afin de calculer la loss et le gradient pour une batch de "batch_size" elements choisis au hasard
+            batch_choice = np.random.choice(N, batch_size, replace=False)
+            X_batch = X[batch_choice]
+            y_batch = y[batch_choice]
+            loss, dW = self.forward_backward(X_batch, y_batch, reg)
+            #     mettre effectuer une descente de gradient : W = W - learning_rate * gradient
+            self.W -= learning_rate * dW
+            #     ajoutér la loss de l'itération courante dans "train_loss_history"
+            train_loss_history.append(loss)
+            #     ajouter du code pour l'option *verbose*
+            if verbose:
+                print(
+                    f'iteration : {i}, '
+                    f'loss : {loss}'
+                    , end='\r'
+                )
+        return train_loss_history
 
         for i in range(num_iter):
             index = np.random.choice(X.shape[0], batch_size, replace=False)

@@ -32,6 +32,23 @@ def softmax_ce_naive_forward_backward(X, W, y, reg):
 
     ### TODO ###
     # Ajouter code ici #
+    # Iteration sur chaque vecteur x_i de la batch X
+    for i in range(N):
+        # Calcul du score du x_i
+        score = np.dot(X[i], W)
+        # Exponentiel du score
+        exp_score = np.exp(score)
+        # Normalisation afin d'obtenir les P(C_i|x_i)
+        s = exp_score / np.sum(exp_score)
+        loss += - np.log(s[y[i]])
+        for j  in range(C):
+            if j == y[i]:
+                dW[:, j] +=  X[i] * (s[j] - 1)
+            else:
+                dW[:, j] += X[i] * (s[j])
+    # Moyenne et regularisation
+    loss = loss / N + 0.5 * reg * np.linalg.norm(W) ** 2
+    dW = dW / N + 2 * 0.5 * reg * W
 
     return loss, dW
 
@@ -62,6 +79,22 @@ def softmax_ce_forward_backward(X, W, y, reg):
     dW = np.zeros(W.shape)
     ### TODO ###
     # Ajouter code ici #
+    # # Transformation de y en one hot vectors
+    y_one_hot = np.zeros((N, C))
+    y_one_hot[np.arange(N), y] = 1
+    # Calcul du score pour le batch X
+    score = np.matmul(X, W)
+    # Normalisation du score pour eviter explosion de la fonction exp
+    # https://cs231n.github.io/linear-classify/#softmax
+    score -= np.matrix(np.max(score, axis=1)).T
+    exp_score = np.exp(score)
+    # Application de la softmax
+    s = exp_score / np.matrix(np.sum(exp_score, axis=1)).T
+    # Calcul du Cross entropy
+    losses = - np.log(s[np.arange(N), y])
+    # Calcul de la moyennne et ajout de la regularisation
+    loss = np.sum(losses) / N + 0.5 * reg * np.linalg.norm(W) ** 2
+    dW = np.matmul(X.T, (s - y_one_hot)) / N + 2 * 0.5 * reg * W
     
     return loss, dW
 
