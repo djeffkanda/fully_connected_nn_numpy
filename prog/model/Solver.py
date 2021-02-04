@@ -44,9 +44,16 @@ def solver(X_train, y_train, X_val, y_val, reg, optimizer, lr_decay=1.0, num_ite
         # TODO
         # Ajouter code ici.
         # 1. Créer une batch de données
+        mask = np.random.choice(X_train.shape[0],batch_size, replace=True)
+        X_batch = X_train[mask]
+        y_batch = y_train[mask]
         # 2. Calculer la loss et les gradients
+        scores = model.forward(X_batch)
+        loss, dScores, _ = model.calculate_loss(scores,y_batch,reg)
+        _ = model.backward(dScores)
+        loss_history.append(loss)
         # 3. faire une itération de descente de gradient en appelant la fonction : optimizer.step()
-
+        optimizer.step()
         
         if verbose and it % 500 == 0:
             print('iteration %d / %d: loss %f' % (it, num_iter, loss))

@@ -56,10 +56,13 @@ class Dense:
         # TODO
         # Ajouter code ici
         # Calculer W*x + b
+        H = np.matmul(X,self.W) + self.b
         # suivi de la fonction d'activation
+        L = self.activation['forward'](H)
         # N'oubliez pas de mettre les bonnes variables dans la cache!
+        self.cache = {'X_in':X, 'X_W':H}
 
-        return A
+        return L
 
     def backward(self, dA, **kwargs):
         """Effectue la rétro-propagation pour les paramètres de la
@@ -75,10 +78,17 @@ class Dense:
         # TODO
         # Ajouter code ici
         # récupérer le contenu de la cache
+        cache = self.cache
+
         # calculer le gradient de la loss par rapport à W et b et mettre les résultats dans self.dW et self.db
-        
+        dAct = self.activation['backward'](cache['X_W'])
+        dA = np.multiply(dAct,dA)
+        self.dW = dA.T.dot(cache['X_in']).T + self.reg * self.W
+        self.db = np.asarray(np.ones(dA.shape[0]).dot(dA) + self.reg * self.b).reshape(-1)
+
         # Retourne la derivee de la couche courante par rapport à son entrée * la backProb dA
-        return -1
+        ret = dA.dot(self.W.T)
+        return ret
 
     def get_params(self):
         return {'W': self.W, 'b': self.b}
