@@ -46,13 +46,18 @@ class LinearClassifier:
         #     ajouter du code pour l'option *verbose*
 
         for i in range(num_iter):
-            index = np.random.choice(X.shape[0],batch_size,replace=False)
+            index = np.random.choice(X.shape[0], batch_size, replace=False)
             X_batch = X[index]
             y_batch = y[index]
-            loss, dW = self.forward_backward_function(X_batch,self.W,y_batch,reg)
+            loss, dW = self.forward_backward_function(X_batch, self.W, y_batch, reg)
             self.W = self.W - learning_rate * dW
             train_loss_history.append(loss)
         #TODO add verbose options
+            if verbose and (i % 500 == 0 or i == 0):
+                print(
+                    f'iteration : {i}/{num_iter}, '
+                    f'loss : {loss}'
+                )
         return train_loss_history
 
     def predict(self, X):
