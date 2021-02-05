@@ -48,7 +48,7 @@ def softmax_ce_naive_forward_backward(X, W, y, reg):
                 dW[:, j] += X[i] * (s[j])
     # Moyenne et regularisation
     loss = loss / N + 0.5 * reg * np.linalg.norm(W) ** 2
-    dW = dW / N + 2 * 0.5 * reg * W
+    dW = dW / N + reg * W
 
     return loss, dW
 
@@ -88,14 +88,21 @@ def softmax_ce_forward_backward(X, W, y, reg):
     # https://cs231n.github.io/linear-classify/#softmax
     score -= np.matrix(np.max(score, axis=1)).T
     exp_score = np.exp(score)
+    # Pour éviter les erreurs de divsion resultante à des petites valeurs,
+    # Ecrire la loss = -score_t + log(\sum(e^{score_j})) par propriété de la
+    # fonction log : https://cs231n.github.io/linear-classify/#softmax
+    sumline_exp_score = np.sum(exp_score, axis=1)
+    losses = -score[np.arange(N), y]
+    losses += np.log(sumline_exp_score)
     # Application de la softmax
-    s = exp_score / np.matrix(np.sum(exp_score, axis=1)).T
-    # Calcul du Cross entropy
-    losses = - np.log(s[np.arange(N), y])
+    softmax_out = exp_score / np.matrix(sumline_exp_score).T
+
     # Calcul de la moyennne et ajout de la regularisation
-    loss = np.sum(losses) / N + 0.5 * reg * np.linalg.norm(W) ** 2
-    dW = np.matmul(X.T, (s - y_one_hot)) / N + 2 * 0.5 * reg * W
-    
+    loss = np.sum(losses) / N
+    loss += 0.5 * reg * np.linalg.norm(W) ** 2
+    dW = np.matmul(X.T, (softmax_out - y_one_hot)) / N
+    dW += reg * W
+
     return loss, dW
 
 
@@ -135,7 +142,7 @@ def hinge_naive_forward_backward(X, W, y, reg):
             dW[:,y[index]] -= data
     # Calcul de la moyenne plus la regularisation
     dW /= N
-    dW += 2 * 0.5 * reg * W
+    dW += reg * W
     loss /= N
     loss += 0.5 * reg * np.linalg.norm(W) ** 2
 
@@ -177,6 +184,6 @@ def hinge_forward_backward(X, W, y, reg):
 
     grad_matrix[np.arange(grad_matrix.shape[0]), pred_index] = 1
     grad_matrix[np.arange(grad_matrix.shape[0]), y] -= 1
-    dW = 1/X.shape[0] * np.matmul(X.T, grad_matrix) + 2 * 0.5 * reg * W
+    dW = 1/X.shape[0] * np.matmul(X.T, grad_matrix) + reg * W
 
     return loss, dW
