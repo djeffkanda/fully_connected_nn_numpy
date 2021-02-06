@@ -1,0 +1,7 @@
+cifar-10-batches-py/
+.DS_Store
+__pycache__/
+.ipynb_checkpoints/
+med_tmp/
+.vscode/
+.idea/
