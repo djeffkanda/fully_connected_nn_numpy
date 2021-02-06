@@ -13,11 +13,10 @@ https://depot.dinf.usherbrooke.ca/dinf/cours/h21/ift780/ragm1601/tp1
 Le travail final se trouve dans la branche master : 
 https://depot.dinf.usherbrooke.ca/dinf/cours/h21/ift780/ragm1601/tp1/tree/master
 
-On a joint aussi notre code, donc vous pouvez le tester sans passer par GitLab.  
+On a joint aussi notre code pour que vous puissiez le tester sans passer par GitLab.  
 
 On a réalisé l’entièreté du travail demandé.  
 
 Avant de pouvoir exécuter les notebooks, il faut récupérer la base de données CIFAR-10 
 en exécutant le script : datasets/get_datasets.sh  
 
-Il se peut que vous ayez besoin de convertir les sauts de lignes du format Windows CRLF au format linux LF.   
